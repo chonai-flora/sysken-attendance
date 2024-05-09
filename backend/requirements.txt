@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+sqlalchemy
+sqlalchemy_utils
+alembic
+psycopg2-binary
+psycopg2
+gradio_client
+pydantic
+python-dotenv
+databases[postgresql]
+typing-extensions
