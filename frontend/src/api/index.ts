@@ -1,6 +1,27 @@
 import axios, { AxiosResponse } from "axios";
+import { InputValues } from "../@types";
 
 axios.defaults.baseURL = import.meta.env.VITE_DATABASE_URL || "";
+
+export const getCourses = (): Promise<AxiosResponse> => {
+    return axios.get(`/courses`);
+}
+
+export const registerMember = (inputValues: InputValues): Promise<AxiosResponse> => {
+    return axios.post(`/members`, {}, {
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+        },
+        params: {
+            last_name: inputValues.name.lastName,
+            first_name: inputValues.name.lastName,
+            grade: inputValues.grade,
+            course_name: inputValues.courseName,
+            number: inputValues.number,
+            barcode: inputValues.barcode,
+        }
+    });
+}
 
 export const getMemberByBarcode = (barcode: string): Promise<AxiosResponse> => {
     return axios.get(`/members/barcode/${barcode}`);

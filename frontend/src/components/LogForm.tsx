@@ -6,14 +6,15 @@ import { ja } from "date-fns/locale/ja";
 import DatePicker, { registerLocale } from "react-datepicker";
 
 import { Member } from "../@types";
+import { useAlertState } from "../hooks/useAlertState";
 import { createLog, getMemberByBarcode } from "../api";
 
 registerLocale("ja", ja);
 
-const Log = (): JSX.Element => {
+const LogForm = (): JSX.Element => {
+    const { setAlert } = useAlertState();
     const [date, setDate] = useState<Date>(new Date());
     const [barcode, setBarcode] = useState<string>("");
-    const [succeeded, setSucceeded] = useState<boolean | null>(null);
     const [memberInfo, setMemberInfo] = useState<Member | null>(null);
     const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -43,12 +44,12 @@ const Log = (): JSX.Element => {
                 onChange={(newDate: Date) => setDate(newDate)}
             />
 
-            <div className="">
+            <div>
                 <button
                     className={"btn w-1/6 mr-1"}
                     onClick={() => {
+                        setAlert(null);
                         setBarcode("");
-                        setSucceeded(null);
                         setMemberInfo(null);
 
                         inputRef.current!.focus();
@@ -62,11 +63,21 @@ const Log = (): JSX.Element => {
                         createLog(barcode, date)
                             .then((responce) => {
                                 console.log(responce);
-                                setSucceeded(true);
+                                setAlert(
+                                    <>
+                                        <FaRegCircleCheck className="text-lg text-green-500" />
+                                        <span>{memberInfo?.id} の出席を登録しました。</span>
+                                    </>
+                                );
                             })
                             .catch((error) => {
                                 console.error(error);
-                                setSucceeded(false);
+                                setAlert(
+                                    <>
+                                        <FaRegCircleXmark className="text-lg text-red-500" />
+                                        <span>登録に失敗しました。</span>
+                                    </>
+                                );
                             });
                     })}
                 >
@@ -92,24 +103,8 @@ const Log = (): JSX.Element => {
                     }
                 })}
             />
-
-            {succeeded != null && (
-                <div className="toast w-full">
-                    <div role="alert" className="alert flex">
-                        {succeeded
-                            ? (<>
-                                <FaRegCircleCheck className="text-lg text-green-500" />
-                                <span>{memberInfo?.id} の出席を登録しました。</span>
-                            </>)
-                            : (<>
-                                <FaRegCircleXmark className="text-lg text-red-500" />
-                                <span>登録に失敗しました。</span>
-                            </>)}
-                    </div>
-                </div>
-            )}
         </div>
     );
 }
 
-export default Log;
+export default LogForm;
