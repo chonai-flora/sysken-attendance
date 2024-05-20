@@ -14,7 +14,7 @@ export const registerMember = (inputValues: InputValues): Promise<AxiosResponse>
         },
         params: {
             last_name: inputValues.name.lastName,
-            first_name: inputValues.name.lastName,
+            first_name: inputValues.name.firstName,
             grade: inputValues.grade,
             course_name: inputValues.courseName,
             number: inputValues.number,
